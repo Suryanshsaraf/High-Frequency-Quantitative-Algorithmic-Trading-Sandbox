@@ -44,6 +44,15 @@ Consumes statistical forecasts from `modeling_engine.py` to drive an automated p
    - **HOLD**: Maintain current position state.
 4. **Streaming Simulator**: Line-by-line streaming runner emulating a real-time event loop with trade execution alerts and performance tear-sheets.
 
+### 3. Quantitative Trading Terminal Dashboard (`app.py`)
+A production-grade Streamlit terminal featuring:
+- **Dark-Themed Two-Column Interface**: Visual execution charts alongside diagnostic panels.
+- **Chart A**: Interactive asset price curve with overlaid `BUY` and `SELL` markers.
+- **Chart B**: Hourly log returns with an expanding **5-Step Ahead GARCH Volatility Cone** ($\pm 2\sigma$ confidence envelope) and empirical 95th percentile risk thresholds.
+- **Professor Diagnostic Panel**: Live readouts of Augmented Dickey-Fuller (ADF) statistics, Ljung-Box test p-values, and GARCH volatility regime persistence.
+- **Live Portfolio Health Card**: Real-time tracking of portfolio equity, cash, units, return %, and max drawdown.
+- **Evaluator Presentation Controls**: Sidebar start/pause simulation toggle, replay speed control, and manual step-forward triggers.
+
 ---
 
 ## Quick Start
@@ -60,13 +69,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running the Scripts
+### Running the Components
 ```bash
 # 1. Run Applied Time Series Modeling Engine
 python3 modeling_engine.py BTC-USD
 
 # 2. Run Quantitative Risk & Paper Execution Simulation
 python3 execution_logic.py BTC-USD
+
+# 3. Launch Interactive Quantitative Terminal Dashboard
+streamlit run app.py
 ```
 
 ### Programmatic Usage
