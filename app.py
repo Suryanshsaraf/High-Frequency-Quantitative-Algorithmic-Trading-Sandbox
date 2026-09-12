@@ -239,6 +239,11 @@ try:
 except Exception as e:
     st.error(f"Error connecting to live market feed: {e}")
     st.stop()
+    prices, returns = pd.Series(dtype=float), pd.Series(dtype=float)
+
+if len(returns) == 0:
+    st.warning("No market data returned. Please verify internet connection or ticker.")
+    st.stop()
 
 total_bars = len(returns)
 sim_window_start = max(0, total_bars - 45)  # simulate over the latest 45 hourly bars
