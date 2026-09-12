@@ -32,6 +32,18 @@ A modular statistical modeling pipeline executing sequential time series econome
 6. **Multi-Period Forecasting**: Projects the next 5 periods of expected mean return and conditional volatility.
 7. **Diagnostic Verification (Ljung-Box)**: Evaluates standardized residuals $\eta_t = e_t / \sigma_t$ for white noise behavior at multiple lag checkpoints ($L = 10, 20$).
 
+### 2. Quantitative Trading & Risk Execution Layer (`execution_logic.py`)
+Consumes statistical forecasts from `modeling_engine.py` to drive an automated paper trading account:
+
+1. **Mock Portfolio Tracker**: Manages simulated balances ($10,000 cash, 0 units), position transitions (`CASH` $\leftrightarrow$ `LONG`), mark-to-market valuations, and transaction logs.
+2. **Dynamic Risk Thresholds**: Computes empirical 95th percentile volatility cutoffs from rolling absolute returns:
+   $$\text{Threshold}_{95\%} = \text{Percentile}_{95}(|r_t|)$$
+3. **Quantitative Signal Rules**:
+   - **BUY**: If in `CASH` and GARCH volatility forecast $\le \text{Threshold}_{95\%}$ (calm market regime), deploy available cash.
+   - **SELL / EXIT**: If `LONG` and GARCH volatility forecast $> \text{Threshold}_{95\%}$ (regime shift / extreme risk spike), liquidate position to `CASH` to protect capital.
+   - **HOLD**: Maintain current position state.
+4. **Streaming Simulator**: Line-by-line streaming runner emulating a real-time event loop with trade execution alerts and performance tear-sheets.
+
 ---
 
 ## Quick Start
@@ -48,27 +60,26 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running the Time Series Modeling Engine
+### Running the Scripts
 ```bash
-# Run on default volatile asset (BTC-USD)
-python3 modeling_engine.py
+# 1. Run Applied Time Series Modeling Engine
+python3 modeling_engine.py BTC-USD
 
-# Run on custom equity or crypto asset (e.g., TSLA, ETH-USD)
-python3 modeling_engine.py TSLA
+# 2. Run Quantitative Risk & Paper Execution Simulation
+python3 execution_logic.py BTC-USD
 ```
 
 ### Programmatic Usage
 ```python
-from modeling_engine import run_pipeline
+from execution_logic import simulate_streaming_execution
 
-results = run_pipeline(symbol="BTC-USD", period="60d", interval="1h", forecast_steps=5)
-
-# Access artifacts
-returns = results["returns"]
-adf_stats = results["adf_test"]
-arima_model = results["arima_model"]
-garch_model = results["garch_model"]
-forecast = results["forecast"]
+# Run 40-step streaming simulation on BTC-USD
+portfolio, trade_log = simulate_streaming_execution(
+    symbol="BTC-USD",
+    simulation_steps=40,
+    percentile=95.0,
+    initial_cash=10000.0,
+)
 ```
 
 ---
