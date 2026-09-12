@@ -73,6 +73,6 @@ forecast = results["forecast"]
 
 ---
 
-## Collaborators & Credits
-- **Lead Developer**: [Suryansh Saraf](https://github.com/Suryanshsaraf)
-- **AI Pair Programmer**: [Antigravity IDE](https://github.com/Suryanshsaraf/High-Frequency-Quantitative-Algorithmic-Trading-Sandbox) (Google DeepMind)
+## Author
+- [Suryansh Saraf](https://github.com/Suryanshsaraf)
+
